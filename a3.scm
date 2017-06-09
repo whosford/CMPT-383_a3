@@ -28,7 +28,10 @@
 			(let loop ((m 0))
 				(if (<= m n)
 					(cons m (loop (+ m 1)))
-					'())))
+					'()
+				)
+			)
+		)
 	)	
 )
 
@@ -88,30 +91,53 @@
 	)
 )
 
-(define lst '())
-
-(define (all-bit-seqs n)
-	(cond
-		((< n 1)
-			'())
-		(else
-
-				(cons
-					(append '(1) (all-bit-seqs (- n 1)))
-					(cons 
-						(append '(0) (all-bit-seqs (- n 1)))
-						lst
-					)
-				)
-			
+(define (left-pad lst n)
+	(cond 
+		((= n 0)
+			lst)
+		(else 
+			(let loop ((i 0))
+				(if (< i n)
+					(cons 0 (loop (+ i 1)))
+					lst
+				)	
+			)
 		)
-
 	)
 )
-;(define (all-bit-seqs n)
-;	(let loop ((i 0) (list))
-;		(cond 
-;			((< ))
-;		)
-;	)
-;)
+
+(define (bit-list num size)
+	(cond 
+		((< num 0)
+			'())
+		((= num 0)
+			(left-pad '(0) (- size 1)))
+		(else 
+			(let loop ((i num) (count 0) (lst '()))
+				(cond 
+					((= i 0)
+						(left-pad lst (- size count)))
+					((even? i)
+						(loop (quotient i 2) (+ count 1) (cons 0 lst)))
+					(else
+						(loop (quotient i 2) (+ count 1) (cons 1 lst)))
+				)
+			)
+		)
+	)		
+)
+
+(define (all-bit-seqs n)
+	(cond 
+		((<= n 0)
+			'())
+		(else 
+			(let loop ((i 0))
+				(if (< i (expt 2 n))
+					(cons (bit-list i n) (loop (+ i 1)))
+					'()
+				)
+			)
+		)
+	)
+)
