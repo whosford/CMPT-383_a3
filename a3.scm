@@ -45,16 +45,18 @@
 	)
 )
 
-(define (prime? n)
-	(let loop ((i 2))
-    	(cond 
-    		((< n (* i i)) 
-    			#t)
-        	((zero? (modulo n i)) 
-         		#f)
-        	(else 
-        		(loop (+ i 1)))
-    	)
+(define prime?
+	(lambda (n)
+		(let loop ((i 2))
+    		(cond 
+    			((< n (* i i)) 
+    				#t)
+        		((zero? (modulo n i)) 
+         			#f)
+        		(else 
+        			(loop (+ i 1)))
+    		)
+		)
 	)
 )
 
@@ -86,12 +88,24 @@
 	)
 )
 
+(define lst '())
+
 (define (all-bit-seqs n)
 	(cond
 		((< n 1)
 			'())
 		(else
-			(list (append (list 1) (all-bit-seqs(- n 1))) (append (list 0) (all-bit-seqs (- n 1)))))
+
+				(cons
+					(append '(1) (all-bit-seqs (- n 1)))
+					(cons 
+						(append '(0) (all-bit-seqs (- n 1)))
+						lst
+					)
+				)
+			
+		)
+
 	)
 )
 ;(define (all-bit-seqs n)
