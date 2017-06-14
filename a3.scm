@@ -52,7 +52,7 @@
 )
 
 (define prime?
-  	(lambda (n)
+  	(lambda (n i)
 	    (cond 
 	    	((or (= n 1) (= n 0)) 
 	    		#f)
@@ -61,16 +61,14 @@
 	      	((even? n) 
 	      		#f)
 	      	(else 
-	      		(let loop ((i 3))
-	          		(cond 
-	          			((> (* i i) n) 
-	          				#t)
-	            		((divides? n i) 
-	            			#f)
-	            		(else 
-	            			(loop (+ i 2)))
-	            	)
-	          	)
+	      		(cond 
+	      			((> i (floor (sqrt n)))
+	      				#t)
+	      			((divides? n i)
+	      				#f)
+	      			(else 
+	      				(prime? n (+ i 2)))
+	      		)
 	      	)
       	)
 	)
@@ -81,7 +79,7 @@
 		((<= n 1)
 			0)
 		(else 
-			(+ (count-primes (- n 1)) (if (prime? n) 1 0)))
+			(+ (count-primes (- n 1)) (if (prime? n 3) 1 0)))
 	)
 )
 
