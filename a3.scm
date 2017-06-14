@@ -54,7 +54,7 @@
 (define prime?
   	(lambda (n i)
 	    (cond 
-	    	((or (= n 1) (= n 0)) 
+	    	((<= n 1) 
 	    		#f)
 	      	((= n 2) 
 	      		#t)
