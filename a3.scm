@@ -24,13 +24,10 @@
 	(cond 
 		((<= n 0)
 			'())
+		((= 0 (- n 1))
+			(cons 0 '()))
 		(else 
-			(let loop ((m 0))
-				(if (<= m n)
-					(cons m (loop (+ m 1)))
-					'()
-				)
-			)
+			(snoc (- n 1) (range (- n 1)))
 		)
 	)	
 )
@@ -44,35 +41,26 @@
 		((number? (car lst))
 			(+ (car lst) (deep-sum (cdr lst))))
 		(else 
-			(+ 0 (deep-sum (cdr lst))))
+			(deep-sum (cdr lst)))
 	)
 )
 
-(define prime?
-	(lambda (n)
-		(let loop ((i 2))
-    		(cond 
-    			((< n (* i i)) 
-    				#t)
-        		((zero? (modulo n i)) 
-         			#f)
-        		(else 
-        			(loop (+ i 1)))
-    		)
+(define (prime n i)
+	(cond 
+		((= i 1) 
+			#t)
+		(else 
+			(if (zero? (modulo n i)) #f (prime n (- i 1)))
 		)
 	)
 )
 
 (define (count-primes n)
-	(let loop ((x n) (result 0))
-		(cond 
-			((<= x 1)
-				result)
-			((prime? x)
-				(loop (- x 1) (+ 1 result)))
-			(else 
-				(loop (- x 1) result))
-		)
+	(cond 
+		((<= n 1)
+			0)
+		(else 
+			(+ (count-primes (- n 1)) (if (prime? (quotient n 2)) 1 0)))
 	)
 )
 
@@ -91,53 +79,46 @@
 	)
 )
 
-(define (left-pad lst n)
+(define (make-list n)
 	(cond 
-		((= n 0)
-			lst)
+		((= n 0) '())
+		(else
+			(cons 0 (make-list (- n 1)))
+		)
+	)
+)
+
+(define (change-element lst x pos)
+	(cond 
+		((or (null? lst) (>= pos (length lst))) lst)
 		(else 
-			(let loop ((i 0))
-				(if (< i n)
-					(cons 0 (loop (+ i 1)))
-					lst
-				)	
+			(if (= pos 0) 
+				(cons x (cdr lst))
+				(cons (car lst) (change-element (cdr lst) x (- pos 1)))
 			)
 		)
 	)
 )
 
-(define (bit-list num size)
+(define (bit-list n lst)
 	(cond 
-		((< num 0)
-			'())
-		((= num 0)
-			(left-pad '(0) (- size 1)))
-		(else 
-			(let loop ((i num) (count 0) (lst '()))
-				(cond 
-					((= i 0)
-						(left-pad lst (- size count)))
-					((even? i)
-						(loop (quotient i 2) (+ count 1) (cons 0 lst)))
-					(else
-						(loop (quotient i 2) (+ count 1) (cons 1 lst)))
-				)
+		((<= n 0)
+			(cons lst '()))
+		(else
+			(append
+				(bit-list (- n 1) (change-element lst 0 (- n 1)))
+				(bit-list (- n 1) (change-element lst 1 (- n 1)))
 			)
 		)
-	)		
+	)
 )
 
 (define (all-bit-seqs n)
 	(cond 
 		((<= n 0)
 			'())
-		(else 
-			(let loop ((i 0))
-				(if (< i (expt 2 n))
-					(cons (bit-list i n) (loop (+ i 1)))
-					'()
-				)
-			)
+		(else
+			(bit-list n (make-list n))
 		)
 	)
 )
