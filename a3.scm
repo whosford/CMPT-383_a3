@@ -45,13 +45,34 @@
 	)
 )
 
-(define (prime n i)
-	(cond 
-		((= i 1) 
-			#t)
-		(else 
-			(if (zero? (modulo n i)) #f (prime n (- i 1)))
-		)
+(define divides?
+	(lambda (a b)
+		(= (remainder a b) 0)
+	)
+)
+
+(define prime?
+  	(lambda (n)
+	    (cond 
+	    	((or (= n 1) (= n 0)) 
+	    		#f)
+	      	((= n 2) 
+	      		#t)
+	      	((even? n) 
+	      		#f)
+	      	(else 
+	      		(let loop ((i 3))
+	          		(cond 
+	          			((> (* i i) n) 
+	          				#t)
+	            		((divides? n i) 
+	            			#f)
+	            		(else 
+	            			(loop (+ i 2)))
+	            	)
+	          	)
+	      	)
+      	)
 	)
 )
 
@@ -60,7 +81,7 @@
 		((<= n 1)
 			0)
 		(else 
-			(+ (count-primes (- n 1)) (if (prime? (quotient n 2)) 1 0)))
+			(+ (count-primes (- n 1)) (if (prime? n) 1 0)))
 	)
 )
 
